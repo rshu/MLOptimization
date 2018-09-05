@@ -5,6 +5,7 @@ from sklearn.cross_validation import train_test_split
 import numpy as np
 from matplotlib.colors import ListedColormap
 
+
 def plot_decision_regions(X, y, classifier,
                           test_idx=None, resolution=0.02):
 
@@ -38,6 +39,15 @@ def plot_decision_regions(X, y, classifier,
                     alpha=1.0, linewidth=1, marker='o',
                     s=55, label='test set')
 
+
+"""Random forests creates decision trees on randomly selected
+data samples, gets prediction from each tree and selects the 
+best solution by means of voting"""
+
+"""In a classification problem, each tree votes and the most
+popular class is chosen as the final result. 
+In the case of regression, the average of all the tree outputs
+is considered as the final result."""
 
 iris = datasets.load_iris()
 X = iris.data[:,[2,3]]
