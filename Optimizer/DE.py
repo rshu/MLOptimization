@@ -3,14 +3,6 @@ from yabox.problems import Levy
 import matplotlib.pyplot as plt
 
 
-# function to optimize
-# def func(x):
-#     value = 0
-#     for i in range(len(x)):
-#         value += x[i]**2
-#     return value / len(x)
-
-
 def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
     dimensions = len(bounds)
 
@@ -24,7 +16,7 @@ def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
     pop_denorm = min_b + pop * diff
 
     # save evaluation of the initial population
-    fitness = np.asarray([func(ind) for ind in pop_denorm])
+    fitness = np.asarray([func(index) for index in pop_denorm])
 
     best_idx = np.argmin(fitness)
     best = pop_denorm[best_idx]
@@ -35,8 +27,8 @@ def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
             # select three other vectors that are not the current one
             idxs = [idx for idx in range(popsize) if idx != j]
 
-            # randomly choose 3 indexes without replacement
-            a, b, c = pop[np.random.choice(idxs, 3, replace = False)]
+            # randomly choose 3 indexes without replacement (unique sample)
+            a, b, c = pop[np.random.choice(idxs, 3, replace=False)]
 
             # A larger mutation factor increases the search radius but may
             # slowdown the convergence of the algorithm.
@@ -51,10 +43,14 @@ def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
             if not np.any(cross_points):
                 cross_points[np.random.randint(0, dimensions)] = True
 
+            # take values from mutant vector when true
             trial = np.where(cross_points, mutant, pop[j])
+
+            # denormalize the trail vector to [min, max]
             trial_denorm = min_b + trial * diff
 
             f = func(trial_denorm)
+
             if f < fitness[j]:
                 fitness[j] = f
                 pop[j] = trial
@@ -69,6 +65,12 @@ def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
 # (array([0.]), array([0.]))
 #  just a single number since the function is 1-D
 
+# function to optimize
+# def func(x):
+#     value = 0
+#     for i in range(len(x)):
+#         value += x[i]**2
+#     return value / len(x)
 
 # problem = Levy()
 # problem.plot3d()
