@@ -1,15 +1,7 @@
 import numpy as np
-from yabox.problems import Levy
 import matplotlib.pyplot as plt
-
-
-# function to optimize
-# def func(x):
-#     value = 0
-#     for i in range(len(x)):
-#         value += x[i]**2
-#     return value / len(x)
-
+import matplotlib.animation as animation
+from IPython.display import HTML
 
 def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
     dimensions = len(bounds)
@@ -61,43 +53,49 @@ def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
                 if f < fitness[best_idx]:
                     best_idx = j
                     best = trial_denorm
-        yield best, fitness[best_idx]
+        yield min_b + pop * diff, fitness, best_idx
 
-
-# it = list(de(lambda x: x**2, bounds=[(-100, 100)]))
-# print(it[-1])
-# (array([0.]), array([0.]))
-#  just a single number since the function is 1-D
-
-
-# problem = Levy()
-# problem.plot3d()
-
-# 2 dimensional function
-# result = list(de(lambda x: x**2 / len(x), bounds=[(-100, 100)] * 32))
-# print(result[-1])
-
-# using 3000 iterations instead of default 1000 iterations
-# result = list(de(lambda x: x**2 / len(x), bounds=[(-100, 100)]*32, its=3000))
-# print(result[-1])
-
-# (array([0., 0., 0., 0., 0., 0., 0., 0.]), 0.0)
-result = list(de(lambda x: sum(x**2)/len(x), [(-100, 100)] * 8, its=3000))
-print(result[-1])
-x, f = zip(*result)
-plt.plot(f)
-plt.show()
-
-
-# when the number of dimensions grows, the number of iterations required
-# by the algorithm to find a good solution grows as well
-for d in [8, 16, 32, 64]:
-    it = list(de(lambda x: sum(x**2)/d, [(-100, 100)] * d, its=3000))
-    x, f = zip(*it)
-    plt.plot(f, label='d={}'.format(d))
-plt.xlabel('Iterations')
-plt.ylabel('f(x)')
+x = np.linspace(0, 10, 500)
+y = np.cos(x) + np.random.normal(0, 0.2, 500)
+plt.scatter(x, y)
+plt.plot(x, np.cos(x), label='cos(x)', color='red')
 plt.legend()
 plt.show()
 
 
+def fmodel(x, w):
+    return w[0] + w[1]*x + w[2] * x**2 + w[3] * x**3 + w[4] * x**4 + w[5] * x**5
+
+
+plt.plot(x, fmodel(x, [1.0, -0.01, 0.01, -0.1, 0.1, -0.01]))
+plt.show()
+
+# Root Mean Square Error (RMSE)
+def rmse(w):
+    y_pred = fmodel(x, w)
+    return np.sqrt(sum((y - y_pred)**2) / len(y))
+
+
+result = list(de(rmse, [(-5, 5)] * 6, its=2000))
+# fig, ax = plt.subplots()
+print(result)
+
+plt.scatter(x, y)
+plt.plot(x, np.cos(x), label='cos(x)', color='red')
+plt.plot(x, fmodel(x, [0.99677643, 0.47572443, -1.39088333,
+                       0.50950016, -0.06498931, 0.00273167]), label='result', color='green')
+plt.legend()
+plt.show()
+
+
+# def animate(i):
+#     ax.clear()
+#     ax.set_ylim([-2, 2])
+#     ax.scatter(x, y)
+#     pop, fit, idx = result[i]
+#     for ind in pop:
+#         data = fmodel(x, ind)
+#         ax.plot(x, data, alpha=0.3)
+#
+# anim = animation.FuncAnimation(fig, animate, frames=2000, interval=20)
+# HTML(anim.to_html5_video())
