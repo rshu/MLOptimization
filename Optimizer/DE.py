@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 
 
 # function to optimize
-def fobj(x):
-    value = 0
-    for i in range(len(x)):
-        value += x[i]**2
-    return value / len(x)
+# def fobj(x):
+#     value = 0
+#     for i in range(len(x)):
+#         value += x[i]**2
+#     return value / len(x)
 
 
 def de(fobj, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
@@ -40,8 +40,8 @@ def de(fobj, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
         yield best, fitness[best_idx]
 
 
-it = list(de(lambda x: x**2, bounds=[(-100, 100)]))
-print(it[-1])
+# it = list(de(lambda x: x**2, bounds=[(-100, 100)]))
+# print(it[-1])
 # (array([0.]), array([0.]))
 #  just a single number since the function is 1-D
 
@@ -49,11 +49,24 @@ print(it[-1])
 # problem = Levy()
 # problem.plot3d()
 
-# result = list(de(lambda x: x**2 / len(x), bounds=[(-100, 100)] * 32, its=3000))
+# 2 dimensional function
+# result = list(de(lambda x: x**2 / len(x), bounds=[(-100, 100)] * 32))
 # print(result[-1])
-# x, f = zip(*result)
-# plt.plot(f)
 
+# using 3000 iterations instead of default 1000 iterations
+# result = list(de(lambda x: x**2 / len(x), bounds=[(-100, 100)]*32, its=3000))
+# print(result[-1])
+
+# (array([0., 0., 0., 0., 0., 0., 0., 0.]), 0.0)
+result = list(de(lambda x: sum(x**2)/len(x), [(-100, 100)] * 8, its=3000))
+print(result[-1])
+x, f = zip(*result)
+plt.plot(f)
+plt.show()
+
+
+# when the number of dimensions grows, the number of iterations required
+# by the algorithm to find a good solution grows as well
 for d in [8, 16, 32, 64]:
     it = list(de(lambda x: sum(x**2)/d, [(-100, 100)] * d, its=3000))
     x, f = zip(*it)
@@ -62,3 +75,5 @@ plt.xlabel('Iterations')
 plt.ylabel('f(x)')
 plt.legend()
 plt.show()
+
+
