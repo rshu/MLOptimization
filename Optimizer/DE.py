@@ -3,6 +3,14 @@ from yabox.problems import Levy
 import matplotlib.pyplot as plt
 
 
+# function to optimize
+def fobj(x):
+    value = 0
+    for i in range(len(x)):
+        value += x[i]**2
+    return value / len(x)
+
+
 def de(fobj, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
     dimensions = len(bounds)
     pop = np.random.rand(popsize, dimensions)
@@ -32,23 +40,19 @@ def de(fobj, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
         yield best, fitness[best_idx]
 
 
-def fobj(x):
-    value = 0
-    for i in range(len(x)):
-        value += x[i]**2
-    return value / len(x)
-
-
 it = list(de(lambda x: x**2, bounds=[(-100, 100)]))
 print(it[-1])
+# (array([0.]), array([0.]))
+#  just a single number since the function is 1-D
 
-problem = Levy()
-problem.plot3d()
 
-#result = list(de(lambda x: x**2 / len(x), bounds=[(-100, 100)] * 32, its=3000))
-#print(result[-1])
-#x, f = zip(*result)
-#plt.plot(f)
+# problem = Levy()
+# problem.plot3d()
+
+# result = list(de(lambda x: x**2 / len(x), bounds=[(-100, 100)] * 32, its=3000))
+# print(result[-1])
+# x, f = zip(*result)
+# plt.plot(f)
 
 for d in [8, 16, 32, 64]:
     it = list(de(lambda x: sum(x**2)/d, [(-100, 100)] * d, its=3000))
