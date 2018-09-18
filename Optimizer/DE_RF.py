@@ -60,14 +60,6 @@ def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
         yield best, fitness[best_idx]
 
 
-features = pd.read_csv(r'C:\Users\terry\PycharmProjects\tutorial\Models\temps.csv')
-features = pd.get_dummies(features)
-labels = np.array(features['actual'])
-features = features.drop('actual', axis=1)
-feature_list = list(features.columns)
-features = np.array(features)
-train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size=0.25, random_state=42)
-
 # Hyperparameters, default, tuning range, description
 # threshold, 0.5, [0.01,1], The value to determine defective or not
 # max_feature, None, [0.01, 1], The number of features to consider when looking for the best split
@@ -75,6 +67,14 @@ train_features, test_features, train_labels, test_labels = train_test_split(feat
 # min_sample_split, 2, [2,20], The minimum number of samples required to split an internal node
 # min_samples_leaf, 1, [1, 20], The minimum number of samples required to be at a leaf node.
 # n_estimators, 100, [50,150], THe number of trees in the forest.
+
+features = pd.read_csv(r'C:\Users\terry\PycharmProjects\tutorial\Models\temps.csv')
+features = pd.get_dummies(features)
+labels = np.array(features['actual'])
+features = features.drop('actual', axis=1)
+feature_list = list(features.columns)
+features = np.array(features)
+train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size=0.25, random_state=42)
 
 
 def rf(n_estimators, min_samples_leaf, min_samples_split, max_leaf_nodes, max_features, max_depth):
@@ -94,3 +94,4 @@ def rf(n_estimators, min_samples_leaf, min_samples_split, max_leaf_nodes, max_fe
 result = list(de(rf, bounds=[(50, 150), (1, 20), (2, 20), (2, 50), (0.01, 1), (1, 10)]))
 print(result[-1])
 
+# (array([54.44211646,  1., 10.38390383, 28.67384164,  0.25510296, 9.96982901]), 94.53515416736293)
