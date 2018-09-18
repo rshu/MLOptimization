@@ -15,9 +15,23 @@ def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
     pop_denorm = min_b + pop * diff
 
     # convert from float to integer
-    pop_denorm_convert = np.int_(pop_denorm).tolist()
+    pop_denorm_convert = pop_denorm.tolist()
 
-    fitness = np.asarray([func(index[0], index[1], index[2], index[3], index[4], index[5]) for index in pop_denorm_convert])
+    result_list = []
+    temp_list = []
+
+    for index in pop_denorm_convert:
+        temp_list.append(np.int_(np.round_(index[0])))
+        temp_list.append(np.int_(np.round_(index[1])))
+        temp_list.append(np.int_(np.round_(index[2])))
+        temp_list.append(np.int_(np.round_(index[3])))
+        temp_list.append(float('%.2f' % index[4]))
+        temp_list.append(np.int(np.round_(index[5])))
+        result_list.append(temp_list)
+        temp_list = []
+
+    fitness = np.asarray([func(index[0], index[1], index[2], index[3], index[4], index[5])
+                          for index in result_list])
 
     best_idx = np.argmax(fitness)
     best = pop_denorm[best_idx]
@@ -33,9 +47,9 @@ def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
 
             trial = np.where(cross_points, mutant, pop[j])
             trial_denorm = min_b + trial * diff
-            trail_denorm_convert = np.int_(trial_denorm).tolist()
-            f = func(trail_denorm_convert[0], trail_denorm_convert[1], trail_denorm_convert[2],
-                     trail_denorm_convert[3], trail_denorm_convert[4], trail_denorm_convert[5])
+            trail_denorm_convert = trial_denorm.tolist()
+            f = func(np.int_(np.round_(trail_denorm_convert[0])), np.int_(np.round_(trail_denorm_convert[1])), np.int_(np.round_(trail_denorm_convert[2])),
+                     np.int_(np.round_(trail_denorm_convert[3])), float('%.2f' % trail_denorm_convert[4]), np.int_(np.round_(trail_denorm_convert[5])))
 
             if f > fitness[j]:
                 fitness[j] = f
@@ -63,7 +77,7 @@ train_features, test_features, train_labels, test_labels = train_test_split(feat
 # n_estimators, 100, [50,150], THe number of trees in the forest.
 
 
-def RF(n_estimators, min_samples_leaf, min_samples_split, max_leaf_nodes, max_features, max_depth):
+def rf(n_estimators, min_samples_leaf, min_samples_split, max_leaf_nodes, max_features, max_depth):
 
     rf = RandomForestRegressor(n_estimators=n_estimators, min_samples_leaf=min_samples_leaf, min_samples_split=min_samples_split,
                                max_leaf_nodes=max_leaf_nodes, max_features=max_features, max_depth=max_depth)
@@ -77,6 +91,6 @@ def RF(n_estimators, min_samples_leaf, min_samples_split, max_leaf_nodes, max_fe
 
 
 # RF(100, 1, 2, 2, 0.01, 5)
-
-result = list(de(RF, bounds=[(50, 150), (1, 20), (2, 20), (2, 50), (1, 2), (1, 10)]))
+result = list(de(rf, bounds=[(50, 150), (1, 20), (2, 20), (2, 50), (0.01, 1), (1, 10)]))
 print(result[-1])
+
