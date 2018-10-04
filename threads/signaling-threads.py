@@ -26,6 +26,7 @@ def wait_for_event_timeout(e, t):
             logging.debug('doing other work')
 
 
+# An Event manages an internal flag that callers can either set() or clear()
 e = threading.Event()
 t1 = threading.Thread(name='block', target=wait_for_event, args=(e,))
 t1.start()
