@@ -68,7 +68,7 @@ def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
 # min_samples_leaf, 1, [1, 20], The minimum number of samples required to be at a leaf node.
 # n_estimators, 100, [50,150], THe number of trees in the forest.
 
-features = pd.read_csv(r'C:\Users\Terry\PycharmProjects\MLOptimization\Models\temps.csv')
+features = pd.read_csv(r'C:\Users\terry\PycharmProjects\tutorial\Models\temps.csv')
 features = pd.get_dummies(features)
 labels = np.array(features['actual'])
 features = features.drop('actual', axis=1)
@@ -86,7 +86,9 @@ def rf(n_estimators, min_samples_leaf, min_samples_split, max_leaf_nodes, max_fe
     errors = abs(predictions - test_labels)
     mape = 100 * (errors / test_labels)
     accuracy = 100 - np.mean(mape)
-    # print('Accuracy:', round(accuracy, 2), '%.')
+    #print('Accuracy:', round(accuracy, 2), '%.')
+    print("---")
+    for i in errors: print(i)
     return accuracy
 
 
@@ -94,11 +96,11 @@ def rf(n_estimators, min_samples_leaf, min_samples_split, max_leaf_nodes, max_fe
 result = list(de(rf, bounds=[(50, 150), (1, 20), (2, 20), (2, 50), (0.01, 1), (1, 10)]))
 print(result[-1])
 
-# (array([54.44211646,  1., 10.38390383, 28.67384164,  0.25510296, 9.96982901]), 94.53515416736293)
-# (array([50., 6.57443301, 2., 35.97013398, 0.3746776, 9.16419074]), 94.53879111488068)
-# (array([50., 4.24348019,  5.20492519, 39.79956237,  0.25259712,10.]), 94.53370431667776)
-# (array([78.2370243, 3.65769774, 9.42066649, 23.58407648,  0.31318909, 10.]), 94.55013371811786)
-# (array([52.27037848,  5.44928123,  6.19726546, 50.        ,  0.35213438, 6.36864629]), 94.52523717448143)
-# (array([50., 7.64186483, 2., 44.37173323, 0.33157424, 5.12368077]), 94.48520255569085)
-# (array([50., 7.91581119, 15.51653384, 41.36672505,  0.46084965, 6.27259968]), 94.51749622161212)
-# (array([50.,  1., 13.4793573 , 50.,  0.36738165, 5.81136957]), 94.52214877481761)
+# (array([54, 1, 10, 28,  0.25, 9]), 94.53515416736293)
+# (array([50, 6, 2, 35, 0.37, 9]), 94.53879111488068)
+# (array([50, 4, 5, 39,  0.25,10]), 94.53370431667776)
+# (array([78, 3, 9, 23,  0.31, 10]), 94.55013371811786)
+# (array([52, 5, 6, 50,  0.31, 6]), 94.52523717448143)
+# (array([50, 7, 2, 44, 0.33, 5]), 94.48520255569085)
+# (array([50, 7, 15, 41,  0.46, 6]), 94.51749622161212)
+# (array([50, 1, 13, 50,  0.36, 5]), 94.52214877481761)
