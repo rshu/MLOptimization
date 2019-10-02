@@ -2,12 +2,14 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, classification_report, \
+    confusion_matrix
 import warnings
+
 warnings.filterwarnings('ignore')
 
 
-def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=200):
+def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=10):
     dimensions = len(bounds)
     pop = np.random.rand(popsize, dimensions)
 
@@ -56,8 +58,10 @@ def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=200):
             trial = np.where(cross_points, mutant, pop[j])
             trial_denorm = min_b + trial * diff
             trail_denorm_convert = trial_denorm.tolist()
-            f = func(np.int_(np.round_(trail_denorm_convert[0])), np.int_(np.round_(trail_denorm_convert[1])), np.int_(np.round_(trail_denorm_convert[2])),
-                     np.int_(np.round_(trail_denorm_convert[3])), float('%.2f' % trail_denorm_convert[4]), np.int_(np.round_(trail_denorm_convert[5])))
+            f = func(np.int_(np.round_(trail_denorm_convert[0])), np.int_(np.round_(trail_denorm_convert[1])),
+                     np.int_(np.round_(trail_denorm_convert[2])),
+                     np.int_(np.round_(trail_denorm_convert[3])), float('%.2f' % trail_denorm_convert[4]),
+                     np.int_(np.round_(trail_denorm_convert[5])))
 
             if f > fitness[j]:
                 fitness[j] = f
@@ -68,30 +72,32 @@ def de(func, bounds, mut=0.8, crossp=0.7, popsize=20, its=200):
         yield best, fitness[best_idx]
 
 
-features = pd.read_csv(r'C:\Users\terry\PycharmProjects\tutorial\Optimizer\cm1.csv')
+features = pd.read_csv(r'./data/cm1.csv')
 features = features.sample(frac=1)
 X = features.iloc[:, :-1]
 y = features['defects'].map({True: 1, False: 0})
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+
+
 # print(X_train.shape, y_train.shape)
 # print(X_test.shape, y_test.shape)
 
 
-# def rf(n_estimators, min_samples_leaf, min_samples_split, max_leaf_nodes, max_features, max_depth):
-#     forest = RandomForestClassifier(n_estimators=n_estimators, min_samples_leaf=min_samples_leaf, min_samples_split=min_samples_split,
-#                                     max_leaf_nodes=max_leaf_nodes, max_features=max_features, max_depth=max_depth)
-#
-#     forest.fit(X_train, y_train)
-#     y_pred = forest.predict(X_test)
-#     precision = precision_score(y_test, y_pred, average="macro")
-#     print(precision)
-#
-#     return precision
-#
-#
-# result = list(de(rf, bounds=[(50, 150), (1, 20), (2, 20), (2, 50), (0.01, 1), (1, 10)]))
-# print(result[-1])
+def rf(n_estimators, min_samples_leaf, min_samples_split, max_leaf_nodes, max_features, max_depth):
+    forest = RandomForestClassifier(n_estimators=n_estimators, min_samples_leaf=min_samples_leaf,
+                                    min_samples_split=min_samples_split,
+                                    max_leaf_nodes=max_leaf_nodes, max_features=max_features, max_depth=max_depth)
 
+    forest.fit(X_train, y_train)
+    y_pred = forest.predict(X_test)
+    precision = precision_score(y_test, y_pred, average="macro")
+    # print(precision)
+
+    return precision
+
+
+result = list(de(rf, bounds=[(50, 150), (1, 20), (2, 20), (2, 50), (0.01, 1), (1, 10)]))
+print(result[-1])
 
 forest = RandomForestClassifier(n_estimators=100, min_samples_leaf=1, min_samples_split=2, max_leaf_nodes=None,
                                 max_features=None, max_depth=5)
@@ -109,4 +115,3 @@ print(recall_score(y_test, y_pred, average="macro"))
 # 0.46120689655172414
 # 0.4385245901639344
 # 0.4863636363636364
-
