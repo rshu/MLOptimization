@@ -1,6 +1,6 @@
 import numpy as np
 from timeit import default_timer as timer
-from numba import vectorize
+from numba import vectorize, cuda
 
 
 @vectorize(["float32(float32, float32)"], target='cuda')
