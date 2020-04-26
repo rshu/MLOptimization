@@ -2,10 +2,7 @@ import os
 import sys
 import argparse
 
-try:
-    from io import StringIO, BytesIO  # python 3
-except:
-    from StringIO import StringIO  # python 2
+from io import StringIO, BytesIO  # python 3
 
 import struct
 import json
@@ -74,6 +71,7 @@ def write_json(data):
     Transform data into json. Very straightforward.
     :param data:
     :return:
+
     '''
     j = json.dumps(data)
     return j
